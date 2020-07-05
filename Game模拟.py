@@ -11,12 +11,15 @@ background1 = Actor("bg1") # 896, 448
 background1.pos = 500, 300
 
 hero = Actor("prince")
+prince_HP = HP(10, 3)#初始化王子HP
 
 monster = Actor("red_din")
 
 box = Actor('box_close')
 dx = []
 dy = []
+
+coins = 0
 
 for i in range(5):
     a = random.randint(50, 800)
@@ -31,6 +34,41 @@ step = 99
 
 monster.x = WIDTH / 2
 monster.y = HEIGHT / 2
+
+# HP类，可用于王子及小怪
+class HP(object):
+
+    def __init__(self, FullHP, num):
+        self.FullHP = FullHP
+        self.CurrentHP = FullHP
+        self.num = num #命数
+        self.count = 0 #复活次数
+    
+    #判断是否死亡并在可能的情形下复活
+    def isdead(self):
+        if self.CurrentHP > 0:
+            return
+        elif self.CurrentHP <= 0 & self.count < self.num: #能复活
+            self.CurrentHP = self.FullHP
+            return
+        else:
+            return True
+
+def game_over():
+    pass
+
+# 画血条
+def draw_hp_bar():
+    prince_HP.isdead()
+    HPBar = Rect((20, 20), (200, 35)) #血槽
+    CurrentHPBar = Rect((20, 20), (200*prince_HP.CurrentHP/prince_HP.FullHP, 33)) #当前血量
+    screen.draw.rect(HPBar, 'black')
+    screen.draw.filled_rect(CurrentHPBar, 'black')
+
+# 画金币
+def draw_coins_bar():
+    screen.blit('gloden', (20,60))
+    screen.draw.text(str(coins), (125, 77), fontsize=50)
 
 ### 上下左右行走模块函数 ###
 def left_movement():
@@ -49,6 +87,9 @@ def down_movement():
 def draw():
     global step, isLoose
     screen.fill('white')
+    #HP、金币状态绘制
+    draw_hp_bar() 
+    draw_coins_bar()
     if step == 99:
         screen.draw.text("Welcome to the Prince V.S. Monsters Game\n"
                          "  Press  Number  1  to  start  the  new  game\n"
@@ -101,6 +142,8 @@ def on_key_down(key):
         exit()
 
 def update():
+    #减血测试！！！
+    prince_HP.CurrentHP -= 0.05
     global step, hero, speed_x, speed_y
     # 往右走
     if keyboard.D:
