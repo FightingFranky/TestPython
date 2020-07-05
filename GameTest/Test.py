@@ -58,7 +58,6 @@ def draw_hp_bar():
     #画血条
     prince_HP.isdead()
     HPBar = Rect((20, 20), (200, 35)) #血槽
-    draw.line((20, 2))
     CurrentHPBar = Rect((20, 20), (200*prince_HP.CurrentHP/prince_HP.FullHP, 33)) #当前血量
     screen.draw.rect(HPBar, 'black')
     screen.draw.filled_rect(CurrentHPBar, 'black')
