@@ -1,4 +1,5 @@
 import pgzrun
+from HP import *
 WIDTH = 1200
 HEIGHT = 600
 
@@ -10,6 +11,8 @@ numAnims = len(Anims)
 animIndex = 0
 animSpeed = 0
 t = 0
+prince_HP = HP(10, 3)#初始化王子HP
+coins = 0
 
 
 player_x = WIDTH / 10
@@ -29,11 +32,48 @@ for j in range(numAnims):
     Anims3[j].x = player_x
     Anims3[j].y = player_y
 
+# HP类，可用于王子及小怪
+class HP(object):
+
+    def __init__(self, FullHP, num):
+        self.FullHP = FullHP
+        self.CurrentHP = FullHP
+        self.num = num #命数
+        self.count = 0 #复活次数
+    
+    #判断是否死亡并在可能的情形下复活
+    def isdead(self):
+        if self.CurrentHP > 0:
+            return
+        elif self.CurrentHP <= 0 & self.count < self.num: #能复活
+            self.CurrentHP = self.FullHP
+            return
+        else:
+            return True
+
+def game_over():
+    pass
+
+def draw_hp_bar():
+    #画血条
+    prince_HP.isdead()
+    HPBar = Rect((20, 20), (200, 35)) #血槽
+    CurrentHPBar = Rect((20, 20), (200*prince_HP.CurrentHP/prince_HP.FullHP, 33)) #当前血量
+    screen.draw.rect(HPBar, 'black')
+    screen.draw.filled_rect(CurrentHPBar, 'black')
+
+def draw_coins_bar():
+    screen.blit('gloden', (20,60))
+    screen.draw.text(str(coins), (125, 77), fontsize=50)
 
 
 def draw():
     global t
     screen.fill('gray')
+
+    draw_hp_bar() #画血条函数
+    draw_coins_bar() #画金币函数
+
     if t == 1:
         Anims[animIndex].draw()
     if t == 2:
@@ -46,6 +86,8 @@ def draw():
 
 def update():
     global animIndex, player_x, animSpeed, t, player_y, last_player_x, last_player_y
+    #测试减血
+    prince_HP.CurrentHP -= 0.05
     # 往右走
     if keyboard.D:
         t = 1
