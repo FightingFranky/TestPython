@@ -2,6 +2,25 @@ import pgzrun
 import turtle
 import random
 
+# HP类，可用于王子及小怪
+class HP(object):
+
+    def __init__(self, FullHP, num):
+        self.FullHP = FullHP
+        self.CurrentHP = FullHP
+        self.num = num #命数
+        self.count = 0 #复活次数
+    
+    #判断是否死亡并在可能的情形下复活
+    def isdead(self):
+        if self.CurrentHP > 0:
+            return
+        elif self.CurrentHP <= 0 & self.count < self.num: #能复活
+            self.CurrentHP = self.FullHP
+            return
+        else:
+            return True
+
 isLoose = False
 speed_x = 2
 speed_y = 2
@@ -35,24 +54,6 @@ step = 99
 monster.x = WIDTH / 2
 monster.y = HEIGHT / 2
 
-# HP类，可用于王子及小怪
-class HP(object):
-
-    def __init__(self, FullHP, num):
-        self.FullHP = FullHP
-        self.CurrentHP = FullHP
-        self.num = num #命数
-        self.count = 0 #复活次数
-    
-    #判断是否死亡并在可能的情形下复活
-    def isdead(self):
-        if self.CurrentHP > 0:
-            return
-        elif self.CurrentHP <= 0 & self.count < self.num: #能复活
-            self.CurrentHP = self.FullHP
-            return
-        else:
-            return True
 
 def game_over():
     pass
@@ -67,8 +68,8 @@ def draw_hp_bar():
 
 # 画金币
 def draw_coins_bar():
-    screen.blit('gloden', (20,60))
-    screen.draw.text(str(coins), (125, 77), fontsize=50)
+    screen.blit('gloden', (20,60))#20,60
+    screen.draw.text(str(coins), (125, 77), fontsize=50) #125 77
 
 ### 上下左右行走模块函数 ###
 def left_movement():
@@ -87,9 +88,6 @@ def down_movement():
 def draw():
     global step, isLoose
     screen.fill('white')
-    #HP、金币状态绘制
-    draw_hp_bar() 
-    draw_coins_bar()
     if step == 99:
         screen.draw.text("Welcome to the Prince V.S. Monsters Game\n"
                          "  Press  Number  1  to  start  the  new  game\n"
@@ -102,6 +100,7 @@ def draw():
         hero.draw()
         screen.draw.text("Press Number 3 to exit the game", (80, 0), fontsize=25, color='orange')
         monster.draw()
+
 
     # elif step == 2:
     if step == 3:
@@ -119,6 +118,9 @@ def draw():
             box.draw()
         # 优先级最高
         hero.draw()
+        #HP、金币状态绘制
+        draw_hp_bar() 
+        draw_coins_bar()
         if step == 4:
             clock.schedule(right_movement, 0.01)
         if step == 5:
