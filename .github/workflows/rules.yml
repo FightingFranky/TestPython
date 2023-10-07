@@ -1,0 +1,32 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2 # this part is important!
+
+      - name: Install Lint Rules
+        run: |
+          curl -fsSL https://www.lintrule.com/install.sh | bash
+
+      - name: Run Lint Rules Check
+        run: |
+          rules check --secret "${{ secrets.LINTRULE_SECRET }}"
